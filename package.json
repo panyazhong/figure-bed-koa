@@ -1,0 +1,25 @@
+{
+  "name": "figure-bed-koa",
+  "version": "1.0.0",
+  "description": "图床系统后台",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "koa",
+    "figure-bed"
+  ],
+  "author": "dapan",
+  "license": "ISC",
+  "dependencies": {
+    "jsonwebtoken": "^8.5.1",
+    "koa": "^2.11.0",
+    "koa-body": "^4.1.1",
+    "koa-router": "^8.0.8",
+    "koa2-cors": "^2.0.6",
+    "md5": "^2.2.1",
+    "mongoose": "^5.9.7",
+    "upyun": "^3.4.1"
+  }
+}
