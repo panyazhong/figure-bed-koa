@@ -4,7 +4,8 @@ const userModel = require('../../models/user')
 const userLoginModel = require('../../models/user_login')
 const md5 = require('md5')
 const jwt = require('jsonwebtoken')
-const config = require('../../utils/config')
+const getUserInfoByCtx = require('../../utils/getUserInfoByToken') 
+const config = require('../../utils/config') 
 
 router.post('/login', async ctx => {
   let result = {}
@@ -87,52 +88,36 @@ router.post('/register', async ctx => {
  * 获取用户信息
  */
 router.get('/getUserInfo', async ctx => {
-  if (ctx.request.header && ctx.request.header.authorization) {
-    let result = {}
-    const parts = ctx.header.authorization.split(' ')
-    if (parts.length === 2) {
-      const scheme = parts[0];
-      const token = parts[1];
-
-      if (/^Bearer$/i.test(scheme)) {
-        let payload = jwt.verify(token, config.token_secret, {
-          complete: true
-        });
-        const { user_id } = payload.payload
-
-        try {
-          const userInfo = await userModel.find({
-            "_id": user_id
-          })
-
-          if (userInfo.length > 0) {
-            let {_id, user_name, role, nick_name} = userInfo[0]
-            result = {
-              code: 20000,
-              data: {
-                user_name: user_name,
-                user_id: _id,
-                role: role,
-                nick_name: nick_name
-              }
-            }
-          } else {
-            result = {
-              code: 20001,
-              data: []
-            }
-          }
-        } catch (error) {
-          result = {
-            code: 50000,
-            msg: error
-          }
+  const { user_id } = await getUserInfoByCtx(ctx)
+  try {
+    const userInfo = await userModel.find({
+      "_id": user_id
+    })
+    if (userInfo.length > 0) {
+      let {_id, user_name, role, nick_name} = userInfo[0]
+      result = {
+        code: 20000,
+        data: {
+          user_name: user_name,
+          user_id: _id,
+          role: role,
+          nick_name: nick_name
         }
       }
-
-      ctx.response.body = result
+    } else {
+      result = {
+        code: 20001,
+        data: []
+      }
+    }
+    
+  } catch (error) {
+    result = {
+      code: 50000,
+       msg: error
     }
   }
+  ctx.response.body = result
 })
 
 module.exports = router

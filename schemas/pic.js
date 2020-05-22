@@ -4,8 +4,14 @@ let Schema = mongoose.Schema
 let PicSchema = new Schema({
   name: String,
   pic_url: String,
-  author_id: Schema.Types.ObjectId,
-  type_id: Schema.Types.ObjectId
+  author: {
+    type: Schema.Types.ObjectId,
+    ref: 'User'
+  },
+  type: {
+    type: Schema.Types.ObjectId,
+    ref: 'pic_type'
+  }
 }, {
   timestamps: true
 })
